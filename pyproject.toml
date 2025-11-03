@@ -10,16 +10,11 @@ readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
-    {name = "Odos Matthews", email = "odos@example.com"}
+    {name = "Odos Matthews", email = "odosmatthews@gmail.com"}
 ]
 maintainers = [
-    {name = "Odos Matthews", email = "odos@example.com"}
+    {name = "Odos Matthews", email = "odosmatthews@gmail.com"}
 ]
-[project.urls]
-Homepage = "https://github.com/eddiethedean/pytest-green-light"
-Documentation = "https://github.com/eddiethedean/pytest-green-light#readme"
-Repository = "https://github.com/eddiethedean/pytest-green-light"
-Issues = "https://github.com/eddiethedean/pytest-green-light/issues"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -64,6 +59,12 @@ all = [
     "testing.postgresql>=2.0.0",
     "testing.mysqld>=2.0.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/eddiethedean/pytest-green-light"
+Documentation = "https://github.com/eddiethedean/pytest-green-light#readme"
+Repository = "https://github.com/eddiethedean/pytest-green-light"
+Issues = "https://github.com/eddiethedean/pytest-green-light/issues"
 
 [project.entry-points.pytest11]
 green_light = "pytest_green_light.plugin"
