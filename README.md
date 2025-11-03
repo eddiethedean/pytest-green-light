@@ -7,12 +7,12 @@
 
 A pytest plugin that gives SQLAlchemy async engines the green light to work seamlessly in pytest fixtures. Solves the `MissingGreenlet` error automatically.
 
-> ✅ **Status: Working (Alpha)**  
-> **Version:** 0.1.0  
+> ✅ **Status: Working (Beta)**  
+> **Version:** 0.2.0  
 > **Test Coverage:** 100%  
 > **Python:** 3.8+
 > 
-> This package is functional and ready to use! It automatically establishes greenlet context for SQLAlchemy async engines in pytest fixtures.
+> This package is functional and ready to use! It automatically establishes greenlet context for SQLAlchemy async engines in pytest fixtures. Version 0.2.0 includes a fix for greenlet context persistence in async test execution.
 
 ## The Problem
 
@@ -27,6 +27,17 @@ This happens because pytest's async fixtures don't automatically establish the g
 ## The Solution
 
 This plugin automatically establishes greenlet context before async tests run, allowing SQLAlchemy async engines to work seamlessly in pytest fixtures. Just install it and your async SQLAlchemy tests will work!
+
+### How It Works
+
+The plugin uses pytest's `pytest_pyfunc_call` hook to wrap async test execution. When an async test function is detected, the plugin wraps it to establish greenlet context in the exact same async context where the test runs. This ensures that:
+
+1. Greenlet context is established right before the test executes
+2. Context is available in the same async context where SQLAlchemy operations occur
+3. Context persists for the entire test execution
+4. No manual intervention is required - it works automatically
+
+This approach solves the context persistence issue that can occur when greenlet context is established in a fixture's async context but the test runs in a different async context.
 
 ## Quick Start
 

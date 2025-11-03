@@ -13,6 +13,6 @@ def test_pytest_exception_interact_excinfo_none():
     mock_report = Mock()
 
     # Should return early without error
-    pytest_exception_interact(mock_node, mock_call, mock_report)
+    pytest_exception_interact(mock_node, mock_call, mock_report)  # type: ignore[arg-type]
 
     # If we get here, it worked correctly

@@ -11,7 +11,7 @@ pytestmark = pytest.mark.asyncio
 def postgresql_db():
     """Create a temporary PostgreSQL database."""
     try:
-        from testing.postgresql import Postgresql
+        from testing.postgresql import Postgresql  # type: ignore[import-untyped]
 
         postgresql = Postgresql()
         yield postgresql

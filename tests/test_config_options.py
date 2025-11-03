@@ -69,7 +69,7 @@ def test_pytest_addoption_registered():
             self.options.append((args, kwargs))
 
     parser = MockParser()
-    pytest_addoption(parser)
+    pytest_addoption(parser)  # type: ignore[arg-type]
 
     # Verify options were added
     assert "green-light" in parser.groups

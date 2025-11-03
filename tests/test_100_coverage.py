@@ -18,7 +18,7 @@ def test_pytest_exception_interact_excinfo_none_coverage():
     mock_report = Mock()
 
     # Should return early at line 198
-    pytest_exception_interact(mock_node, mock_call, mock_report)
+    pytest_exception_interact(mock_node, mock_call, mock_report)  # type: ignore[arg-type]
     # If we get here, line 198 was executed
 
 
@@ -37,7 +37,7 @@ def test_pytest_exception_interact_not_missing_greenlet_coverage():
     mock_report = Mock()
 
     # Should return early at line 202 (not isinstance check)
-    pytest_exception_interact(mock_node, mock_call, mock_report)
+    pytest_exception_interact(mock_node, mock_call, mock_report)  # type: ignore[arg-type]
     # If we get here, line 202 was executed
 
 
@@ -57,7 +57,7 @@ def test_pytest_exception_interact_with_args_coverage():
     mock_report = Mock()
 
     # This should execute lines 229-230
-    pytest_exception_interact(mock_node, mock_call, mock_report)
+    pytest_exception_interact(mock_node, mock_call, mock_report)  # type: ignore[arg-type]
 
     # Verify lines 229-230 were executed (original message preserved)
     assert len(exception.args) > 0
@@ -82,7 +82,7 @@ def test_pytest_exception_interact_empty_args_coverage():
     mock_report = Mock()
 
     # This should execute line 232 (else branch)
-    pytest_exception_interact(mock_node, mock_call, mock_report)
+    pytest_exception_interact(mock_node, mock_call, mock_report)  # type: ignore[arg-type]
 
     # Verify line 232 was executed
     assert len(exception.args) > 0

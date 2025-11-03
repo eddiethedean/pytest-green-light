@@ -11,7 +11,7 @@ pytestmark = pytest.mark.asyncio
 def mysqld_db():
     """Create a temporary MySQL database."""
     try:
-        from testing.mysqld import Mysqld
+        from testing.mysqld import Mysqld  # type: ignore[import-untyped]
 
         mysqld = Mysqld()
         yield mysqld
@@ -44,7 +44,7 @@ async def mysql_engine(mysqld_db):
 
         try:
             # Try with timeout for Python 3.11+
-            async with asyncio.timeout(5.0):
+            async with asyncio.timeout(5.0):  # type: ignore[attr-defined]
                 async with engine.begin() as conn:
                     await conn.execute(text("SELECT 1"))
         except AttributeError:

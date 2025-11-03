@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 from typing import Any
 
 import pytest
@@ -89,9 +90,13 @@ async def ensure_greenlet_context(request: pytest.FixtureRequest) -> Any:
     """
     Auto-use async fixture that ensures greenlet context is established.
 
-    This fixture runs automatically for all tests and establishes
-    greenlet context before async operations. Can be disabled with
-    --green-light-no-autouse flag.
+    Note: For async tests, the pytest_pyfunc_call hook is the primary method
+    for establishing greenlet context, as it ensures context is established
+    in the exact same async context where the test runs. This fixture provides
+    additional coverage for edge cases and non-async tests that may need
+    greenlet context.
+
+    Can be disabled with --green-light-no-autouse flag.
 
     Args:
         request: Pytest fixture request
@@ -143,6 +148,52 @@ def pytest_configure(config: pytest.Config) -> None:
         "markers",
         "async_sqlalchemy: marks tests that use SQLAlchemy async",
     )
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_pyfunc_call(pyfuncitem: pytest.Function) -> Any:
+    """
+    Establish greenlet context before async test execution.
+
+    This hook wraps test function execution and establishes greenlet context
+    in the same async context where the test will run, ensuring
+    SQLAlchemy async engines work correctly.
+
+    Args:
+        pyfuncitem: The pytest function item being executed
+    """
+    # Check if autouse is enabled
+    config = pyfuncitem.config
+    autouse = _should_establish_context(config)
+    debug = config.getoption("green_light_debug", default=False)
+
+    # Only proceed if autouse is enabled
+    if not autouse:
+        yield
+        return
+
+    # Check if test function is async
+    test_function = pyfuncitem.function
+    is_async = inspect.iscoroutinefunction(test_function)
+
+    if is_async and greenlet_spawn is not None:
+        # For async tests, we need to establish greenlet context
+        # in the async context where the test will run.
+        # We wrap the test function to establish context first.
+        original_function = test_function
+
+        async def wrapped_test_function(*args: Any, **kwargs: Any) -> Any:
+            """Wrapper that establishes greenlet context then runs the test."""
+            # Establish greenlet context in the same async context as the test
+            await _establish_greenlet_context_async(debug=debug)
+            # Run the original test function
+            return await original_function(*args, **kwargs)
+
+        # Replace the test function with our wrapper
+        pyfuncitem.function = wrapped_test_function
+
+    # Execute the test (hookwrapper pattern)
+    yield
 
 
 def _get_diagnostic_info() -> str:

@@ -57,7 +57,7 @@ def test_pytest_exception_interact_with_missing_greenlet():
     mock_report = Mock()
 
     # Call the function - this should execute lines 229-230
-    pytest_exception_interact(mock_node, mock_call, mock_report)
+    pytest_exception_interact(mock_node, mock_call, mock_report)  # type: ignore[arg-type]
 
     # Verify exception args were modified (line 229-230 path)
     assert len(exception.args) > 0
@@ -85,7 +85,7 @@ def test_pytest_exception_interact_with_other_exception():
     mock_report = Mock()
 
     # Call the function
-    pytest_exception_interact(mock_node, mock_call, mock_report)
+    pytest_exception_interact(mock_node, mock_call, mock_report)  # type: ignore[arg-type]
 
     # Exception should not be modified
     assert len(exception.args) == 1
@@ -100,7 +100,7 @@ def test_pytest_exception_interact_with_none_excinfo():
     mock_report = Mock()
 
     # Should not raise
-    pytest_exception_interact(mock_node, mock_call, mock_report)
+    pytest_exception_interact(mock_node, mock_call, mock_report)  # type: ignore[arg-type]
 
 
 def test_pytest_exception_interact_when_missing_greenlet_is_none():
@@ -114,4 +114,4 @@ def test_pytest_exception_interact_when_missing_greenlet_is_none():
         mock_report = Mock()
 
         # Should return early without error
-        pytest_exception_interact(mock_node, mock_call, mock_report)
+        pytest_exception_interact(mock_node, mock_call, mock_report)  # type: ignore[arg-type]

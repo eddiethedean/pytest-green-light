@@ -129,9 +129,9 @@ def test_import_version():
     import pytest_green_light
 
     # Access __version__ directly
-    assert pytest_green_light.__version__ == "0.1.0"
+    assert pytest_green_light.__version__ == "0.1.0"  # type: ignore[attr-defined]
     # Also test importing __version__ directly
-    from pytest_green_light import __version__
+    from pytest_green_light import __version__  # type: ignore[attr-defined]
 
     assert __version__ == "0.1.0"
 
@@ -141,7 +141,7 @@ def test_module_imports():
     import pytest_green_light
 
     assert hasattr(pytest_green_light, "__version__")
-    assert pytest_green_light.__version__ == "0.1.0"
+    assert pytest_green_light.__version__ == "0.1.0"  # type: ignore[attr-defined]
     # Access it multiple ways to ensure coverage
-    version = pytest_green_light.__version__
+    version = pytest_green_light.__version__  # type: ignore[attr-defined]
     assert version == "0.1.0"

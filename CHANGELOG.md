@@ -7,29 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.2.0] - 2024-11-03
-
-### Added
-- **AsyncSession Fixtures**: `async_session_factory()` and `create_async_session_fixture()` helpers for easy session management
-- **Transaction Management**: `async_db_transaction()` context manager and `async_transaction_fixture()` for automatic rollback and test isolation
-  - Support for nested transactions (savepoints)
-  - Configurable rollback behavior
-- **Configuration Options**: Command-line flags for plugin customization
-  - `--green-light-autouse` / `--green-light-no-autouse`: Control automatic greenlet context establishment
-  - `--green-light-debug`: Enable debug logging for greenlet context establishment
-- **Improved Error Messages**: Enhanced diagnostics when `MissingGreenlet` errors occur
-  - Automatic detection and reporting of MissingGreenlet errors
-  - Environment diagnostics (SQLAlchemy version, greenlet version, etc.)
-  - Troubleshooting steps and suggestions
-- **Enhanced Documentation**: Updated README with examples for all new features
-
-### Changed
-- Improved test coverage (93% overall)
-- Enhanced plugin architecture for better extensibility
+## [0.2.0] - 2024-12-XX
 
 ### Fixed
-- Better handling of edge cases in greenlet context establishment
-- Improved compatibility with different SQLAlchemy versions
+- **Greenlet Context Persistence**: Fixed critical issue where greenlet context established in fixtures didn't persist to the async context where SQLAlchemy operations actually execute
+  - Implemented `pytest_pyfunc_call` hook to wrap async test functions
+  - Greenlet context is now established in the exact same async context where tests run
+  - Ensures context is available when SQLAlchemy async engines make connections
+  - Fixes `MissingGreenlet` errors that occurred even when the plugin was installed
+
+### Changed
+- Switched from `pytest_runtest_call` to `pytest_pyfunc_call` hook for better control over test function execution
+- Updated internal implementation to wrap async test functions directly rather than relying solely on fixtures
+- Changed status from Alpha to Beta as the plugin is now more stable and reliable
+
+### Added
+- Test cases specifically verifying the greenlet context persistence fix
+- Enhanced documentation explaining how the hook-based approach works
 
 ## [0.1.0] - 2024-11-03
 

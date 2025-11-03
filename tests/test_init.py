@@ -13,7 +13,7 @@ def test_version_attribute():
         import pytest_green_light
 
     # Access __version__ to ensure it's measured
-    version = pytest_green_light.__version__
+    version = pytest_green_light.__version__  # type: ignore[attr-defined]
     assert version == "0.1.0"
     assert isinstance(version, str)
 
@@ -24,4 +24,4 @@ def test_module_has_version():
 
     assert hasattr(pytest_green_light, "__version__")
     # Directly access the attribute
-    assert pytest_green_light.__version__ == "0.1.0"
+    assert pytest_green_light.__version__ == "0.1.0"  # type: ignore[attr-defined]

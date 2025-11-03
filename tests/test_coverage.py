@@ -75,7 +75,7 @@ def test_pytest_exception_interact_with_empty_args():
     mock_report = Mock()
 
     # This should trigger line 232 (else branch when len(args) == 0)
-    pytest_exception_interact(mock_node, mock_call, mock_report)
+    pytest_exception_interact(mock_node, mock_call, mock_report)  # type: ignore[arg-type]
 
     # Verify exception args were set (line 232)
     assert len(exception.args) > 0

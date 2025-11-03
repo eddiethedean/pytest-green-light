@@ -22,7 +22,7 @@ def test_missing_greenlet_import_exception():
             f"'{type(mock_exc).__name__}' object has no attribute '{name}'"
         )
 
-    mock_exc.__getattr__ = getattr_mock
+    mock_exc.__getattr__ = getattr_mock  # type: ignore[assignment]
 
     # Mock sqlalchemy.exc
     with patch.dict("sys.modules", {"sqlalchemy.exc": mock_exc}):
