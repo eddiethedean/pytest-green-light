@@ -11,14 +11,13 @@ Note: This is an example file, not a test file. To use it:
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine, AsyncSession
-from sqlalchemy.orm import declarative_base, Mapped, mapped_column
-from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
+from sqlalchemy.orm import Mapped, declarative_base, mapped_column
 
 from pytest_green_light.fixtures import (
+    async_db_transaction,
     async_engine_factory,
     async_session_factory,
-    async_db_transaction,
 )
 
 # Base for SQLAlchemy models
@@ -28,7 +27,7 @@ Base = declarative_base()
 # Example model
 class User(Base):
     __tablename__ = "users"
-    
+
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     email: Mapped[str]
@@ -80,12 +79,12 @@ async def test_create_user(session: AsyncSession):
         user = User(id=1, name="Alice", email="alice@example.com")
         session.add(user)
         await session.commit()
-        
+
         # Verify user was created
         result = await session.get(User, 1)
         assert result is not None
         assert result.name == "Alice"
-    
+
     # After transaction, user should be rolled back
     result = await session.get(User, 1)
     assert result is None
@@ -101,7 +100,7 @@ async def test_multiple_users(session: AsyncSession):
         for user in users:
             session.add(user)
         await session.commit()
-        
+
         # Verify users exist
         result1 = await session.get(User, 1)
         result2 = await session.get(User, 2)
@@ -116,13 +115,14 @@ async def test_user_query(session: AsyncSession):
         user = User(id=1, name="Alice", email="alice@example.com")
         session.add(user)
         await session.commit()
-        
+
         # Query users
         from sqlalchemy import select
+
         stmt = select(User).where(User.name == "Alice")
         result = await session.execute(stmt)
         users = result.scalars().all()
-        
+
         assert len(users) == 1
         assert users[0].name == "Alice"
 
@@ -134,22 +134,21 @@ async def test_nested_transaction(session: AsyncSession):
         user1 = User(id=1, name="Alice", email="alice@example.com")
         session.add(user1)
         await session.commit()
-    
+
     # Nested transaction
     async with async_db_transaction(session, nested=True, rollback=True):
         user2 = User(id=2, name="Bob", email="bob@example.com")
         session.add(user2)
         await session.commit()
-        
+
         # Both should exist during nested transaction
         result1 = await session.get(User, 1)
         result2 = await session.get(User, 2)
         assert result1 is not None
         assert result2 is not None
-    
+
     # After nested transaction rollback, only first should exist
     result1 = await session.get(User, 1)
     result2 = await session.get(User, 2)
     assert result1 is not None
     assert result2 is None
-

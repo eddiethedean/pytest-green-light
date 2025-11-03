@@ -132,6 +132,9 @@ dmypy.json
 # pytype static type analyzer
 .pytype/
 
+# Ruff
+.ruff_cache/
+
 # Cython debug symbols
 cython_debug/
 
@@ -149,4 +152,5 @@ cython_debug/
 .hypothesis/
 .coverage
 htmlcov/
+.benchmarks/
 
